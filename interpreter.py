@@ -2,8 +2,8 @@ from token1 import Token
 import sys
 import math
 
-INTEGER, PLUS, MINUS, MUL, DIV, PER, FD, SQUR, EOF = (
-    'INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', 'PER', 'FD', 'SQUR', 'EOF'
+INTEGER, PLUS, MINUS, MUL, DIV, MOD, FD, SQUR, EOF = (
+    'INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', 'MOD', 'FD', 'SQUR', 'EOF'
 )
 
 class Interpreter(object):
@@ -21,6 +21,7 @@ class Interpreter(object):
         and assign the next token to the self.current_token, otherwise raise an exception."""
         if self.current_token.type == token_type:
             self.current_token = self.lexer.get_next_token()
+
         else:
             self.error()
 
@@ -34,7 +35,7 @@ class Interpreter(object):
         """term : factor ((MUL | DIV) factor)*"""
         result = self.factor()
 
-        while self.current_token.type in (MUL, DIV, PER, FD, SQUR):
+        while self.current_token.type in (MUL, DIV, MOD, FD, SQUR):
             token = self.current_token
 
             if token.type == SQUR:
@@ -56,15 +57,18 @@ class Interpreter(object):
             elif token.type == FD:
                 self.eat(FD)
                 result = math.floor(result / self.factor())
+            elif token.type == MOD:
+                self.eat(MOD)
+                last_num = self.current_token 
+                division = math.floor(result / self.factor())
+                product_div = division * last_num.value
+                result = result - product_div
 
         return result
 
     def expr(self):
         """Arithmetic expression parser / interpreter.
-
-        calc>  14 + 2 * 5 - 6 / 3
-        22
-
+        calc>  14 + 2 * 5 - 6 / 3 = 22
         expr   : term ((PLUS | MINUS) term)*
         term   : factor ((MUL | DIV) factor)*
         factor : INTEGER

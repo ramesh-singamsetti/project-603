@@ -2,8 +2,8 @@ from token import ENDMARKER
 from token1 import Token
 import sys
 
-INTEGER, PLUS, MINUS, MUL, DIV, PER, FD, SQUR, EOF = (
-    'INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', 'PER', 'FD', 'SQUR', 'EOF'
+INTEGER, PLUS, MINUS, MUL, DIV, MOD, FD, SQUR, EOF = (
+    'INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', 'MOD', 'FD', 'SQUR', 'EOF'
 )
 
 
@@ -86,7 +86,7 @@ class Lexer(object):
 
             if self.current_char == '%':
                 self.next()
-                return Token(PER, '%')
+                return Token(MOD, '%')
 
             self.error()
             sys.exit()
